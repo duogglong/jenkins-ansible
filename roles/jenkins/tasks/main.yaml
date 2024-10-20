@@ -78,17 +78,16 @@
     - ca-certificates
     - gnupg
 
+- name: Add Google Cloud SDK GPG key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
 - name: Add Google Cloud SDK apt repository
   apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
     filename: "google-cloud-sdk"
     state: present
-
-- name: Add Google Cloud SDK GPG key
-  get_url:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    dest: /usr/share/keyrings/cloud.google.gpg
-    mode: '0644'
 
 - name: Update APT after adding Google Cloud SDK repository
   apt:
