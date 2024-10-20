@@ -126,6 +126,34 @@
     update_cache: yes
   become: yes
 
+- name: Check if apt-get is running
+  command: ps aux | grep '[a]pt'
+  register: apt_process
+  ignore_errors: yes
+
+- name: Kill the apt-get process if it is running
+  command: kill -9 {{ item.pid }}
+  loop: "{{ apt_process.stdout_lines | select('search', 'apt') | map('split', ' ') | map('first') | list }}"
+  when: apt_process.stdout | length > 0
+  ignore_errors: yes
+
+- name: Remove dpkg lock files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /var/lib/dpkg/lock-frontend
+    - /var/cache/apt/archives/lock
+  ignore_errors: yes
+
+- name: Reconfigure dpkg
+  command: dpkg --configure -a
+  ignore_errors: yes
+
+- name: Update apt-get cache
+  apt:
+    update_cache: yes
+
 # Cài đặt Google Cloud CLI
 - name: Install Google Cloud CLI
   apt:
