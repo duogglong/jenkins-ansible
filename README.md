@@ -24,3 +24,10 @@
   ```
   ansible-galaxy collection install community.docker
   ```
+### III, How to use
+
+To execute each playbook, cd to the corresponding directory and run this command (with flag --ask-become-pass you must be enter your root password):
+
+```
+ansible-playbook -i inventory.yaml --ask-become-pass setup.yaml
+```

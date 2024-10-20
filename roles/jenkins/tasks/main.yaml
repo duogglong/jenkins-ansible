@@ -37,10 +37,10 @@
     name: docker-ce
     state: present
 
-# - name: Add Jenkins key to apt
-#   apt_key:
-#     url: https://pkg.jenkins.io/debian/jenkins.io.key
-#     state: present
+- name: Add Jenkins key to apt
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
 
 - name: Add Jenkins repository
   apt_repository:
@@ -87,83 +87,3 @@
 
 - name: Verify kubectl installation
   command: kubectl version --client
-
-# GCloud
-# Cập nhật danh sách gói
-- name: Update APT cache
-  apt:
-    update_cache: yes
-  become: yes
-
-# Cài đặt các gói cần thiết
-- name: Install required packages
-  apt:
-    name: 
-      - apt-transport-https
-      - ca-certificates
-      - gnupg
-      - curl
-    state: present
-  become: yes
-
-# Tải và thêm khóa GPG cho Google Cloud SDK
-- name: Download Google Cloud SDK GPG key and save to keyring
-  command: curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg -o /tmp/apt-key.gpg
-  become: yes
-
-- name: Convert the GPG key to apt keyring format
-  command: gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg /tmp/apt-key.gpg
-  become: yes
-
-# Thêm repository cho Google Cloud SDK
-- name: Add Google Cloud SDK apt repository
-  shell: echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
-  become: yes
-
-# Cập nhật APT cache sau khi thêm repository
-- name: Update APT cache after adding Google Cloud SDK repo
-  apt:
-    update_cache: yes
-  become: yes
-
-- name: Check if apt-get is running
-  command: ps aux | grep '[a]pt'
-  register: apt_process
-  ignore_errors: yes
-
-- name: Kill the apt-get process if it is running
-  command: kill -9 {{ item.pid }}
-  loop: "{{ apt_process.stdout_lines | select('search', 'apt') | map('split', ' ') | map('first') | list }}"
-  when: apt_process.stdout | length > 0
-  ignore_errors: yes
-
-- name: Remove dpkg lock files
-  file:
-    path: "{{ item }}"
-    state: absent
-  loop:
-    - /var/lib/dpkg/lock-frontend
-    - /var/cache/apt/archives/lock
-  ignore_errors: yes
-
-- name: Reconfigure dpkg
-  command: dpkg --configure -a
-  ignore_errors: yes
-
-- name: Update apt-get cache
-  apt:
-    update_cache: yes
-
-# Cài đặt Google Cloud CLI
-- name: Install Google Cloud CLI
-  apt:
-    name: google-cloud-cli
-    state: present
-  become: yes
-
-# Cài đặt GKE gcloud auth plugin
-- name: Install GKE gcloud auth plugin
-  apt:
-    name: google-cloud-sdk-gke-gcloud-auth-plugin
-    state: present
-  become: yes
