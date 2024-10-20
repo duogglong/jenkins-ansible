@@ -87,3 +87,51 @@
 
 - name: Verify kubectl installation
   command: kubectl version --client
+
+# GCloud
+# Cập nhật danh sách gói
+- name: Update APT cache
+  apt:
+    update_cache: yes
+  become: yes
+
+# Cài đặt các gói cần thiết
+- name: Install required packages
+  apt:
+    name: 
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+      - curl
+    state: present
+  become: yes
+
+# Tải và thêm khóa GPG cho Google Cloud SDK
+- name: Download Google Cloud SDK GPG key and save to keyring
+  command: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+  become: yes
+
+# Thêm repository cho Google Cloud SDK
+- name: Add Google Cloud SDK apt repository
+  shell: echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
+  become: yes
+
+# Cập nhật APT cache sau khi thêm repository
+- name: Update APT cache after adding Google Cloud SDK repo
+  apt:
+    update_cache: yes
+  become: yes
+
+# Cài đặt Google Cloud CLI
+- name: Install Google Cloud CLI
+  apt:
+    name: google-cloud-cli
+    state: present
+  become: yes
+
+# Cài đặt GKE gcloud auth plugin
+- name: Install GKE gcloud auth plugin
+  apt:
+    name: google-cloud-sdk-gke-gcloud-auth-plugin
+    state: present
+  become: yes
