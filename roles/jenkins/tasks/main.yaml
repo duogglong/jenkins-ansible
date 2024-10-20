@@ -78,33 +78,7 @@
     - ca-certificates
     - gnupg
 
-# Add Google Cloud SDK GPG key manually using the keyserver
-- name: Add Google Cloud SDK GPG key
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: C0BA5CE6DC6315A3
-    state: present
-
-# Add Google Cloud SDK GPG key manually from URL
-- name: Download Google Cloud SDK GPG key
-  command: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg -o /usr/share/keyrings/cloud.google.gpg
-  become: yes
-
-- name: Add Google Cloud SDK apt repository
-  apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
-    filename: "google-cloud-sdk"
-    state: present
-
-- name: Update APT after adding Google Cloud SDK repository
-  apt:
-    update_cache: yes
-
-- name: Install Google Cloud SDK
-  apt:
-    name: google-cloud-sdk
-    state: present
-
+# Install kubectl
 - name: Download kubectl
   get_url:
     url: "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
