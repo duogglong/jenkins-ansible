@@ -1,58 +1,40 @@
 ---
-- name: Install Jenkins and OpenJDK 17
-  hosts: all
-  become: yes  # Cho phép chạy lệnh sudo
-  tasks:
-    - name: Update APT package manager
-      apt:
-        update_cache: yes
-    
-    - name: Install OpenJDK 17
-      apt:
-        name: openjdk-17-jdk
-        state: present
-    
-    - name: Add Jenkins key to apt
-      apt_key:
-        url: https://pkg.jenkins.io/debian/jenkins.io.key
-        state: present
-    
-    - name: Add Jenkins repository
-      apt_repository:
-        repo: 'deb http://pkg.jenkins.io/debian-stable binary/'
-        state: present
-    
-    # - name: Add additional Jenkins GPG key
-    #   command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA
-    
-    - name: Update APT after adding Jenkins repository
-      apt:
-        update_cache: yes
-    
-    - name: Install Jenkins
-      apt:
-        name: jenkins
-        state: present
-    
-    - name: Start Jenkins service
-      systemd:
-        name: jenkins
-        state: started
-        enabled: yes
-    
-    - name: Check Jenkins service status
-      systemd:
-        name: jenkins
-        state: started
-        enabled: yes
-      register: jenkins_status
-    
-    - name: Print Jenkins status
-      debug:
-        msg: "Jenkins status: {{ jenkins_status }}"
-    
-    - name: Add Jenkins user to Docker group
-      user:
-        name: jenkins
-        groups: docker
-        append: yes
+- name: Update APT package manager
+  apt:
+    update_cache: yes
+
+- name: Install OpenJDK 17
+  apt:
+    name: openjdk-17-jdk
+    state: present
+
+- name: Add Jenkins key to apt
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+
+- name: Add Jenkins repository
+  apt_repository:
+    repo: 'deb http://pkg.jenkins.io/debian-stable binary/'
+    state: present
+
+- name: Update APT after adding Jenkins repository
+  apt:
+    update_cache: yes
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Start Jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: Add Jenkins user to Docker group
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
