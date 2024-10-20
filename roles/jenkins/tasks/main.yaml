@@ -86,10 +86,10 @@
     state: present
 
 # Add Google Cloud SDK GPG key manually from URL
-- name: Add Google Cloud SDK GPG key
-  command: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo tee /usr/share/keyrings/cloud.google.gpg
+- name: Download Google Cloud SDK GPG key
+  command: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg -o /usr/share/keyrings/cloud.google.gpg
   become: yes
-  
+
 - name: Add Google Cloud SDK apt repository
   apt_repository:
     repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
