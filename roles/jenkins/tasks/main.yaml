@@ -78,9 +78,11 @@
     - ca-certificates
     - gnupg
 
+# Add Google Cloud SDK GPG key manually using the keyserver
 - name: Add Google Cloud SDK GPG key
   apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    keyserver: keyserver.ubuntu.com
+    id: C0BA5CE6DC6315A3
     state: present
 
 - name: Add Google Cloud SDK apt repository
