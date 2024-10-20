@@ -37,6 +37,7 @@
     name: docker-ce
     state: present
 
+# Tự add key băng tay, báo lỗi thiếu key nào thì thay vào: sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <key-id>
 - name: Add Jenkins repository
   apt_repository:
     repo: 'deb http://pkg.jenkins.io/debian-stable binary/'
